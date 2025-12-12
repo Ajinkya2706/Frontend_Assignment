@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "lint": "eslint \"src/**/*.{js,jsx}\""
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "build": "npm install && npm install --save-dev nodemon"
   },
   "keywords": [],
   "author": "",
