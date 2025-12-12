@@ -15,8 +15,3 @@ export const fetchProfile = async () => {
   return data;
 };
 
-export const updateProfile = async (payload) => {
-  const { data } = await api.put('/api/profile', payload);
-  return data;
-};
-

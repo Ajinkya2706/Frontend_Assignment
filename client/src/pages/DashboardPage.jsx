@@ -2,16 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import TopBar from '../components/TopBar';
 import NoteForm from '../components/NoteForm';
 import NoteCard from '../components/NoteCard';
-import ProfileCard from '../components/ProfileCard';
 import { useAuth } from '../context/AuthContext';
 import { listNotes, createNote, updateNote, deleteNote } from '../services/noteService';
-import { fetchProfile } from '../services/authService';
 
 const DashboardPage = () => {
   const { user, logout } = useAuth();
-  const [profile, setProfile] = useState(user);
-  const [profileSaving, setProfileSaving] = useState(false);
-  const [profileMsg, setProfileMsg] = useState('');
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -36,10 +31,6 @@ const DashboardPage = () => {
   };
 
   useEffect(() => {
-    fetchProfile().then(setProfile).catch(() => setProfile(user));
-  }, [user]);
-
-  useEffect(() => {
     loadNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, pinnedOnly]);
@@ -62,21 +53,6 @@ const DashboardPage = () => {
     }
   };
 
-  const handleProfileSave = async (name) => {
-    setProfileSaving(true);
-    setProfileMsg('');
-    setError('');
-    try {
-      const updated = await updateProfile({ name });
-      setProfile(updated);
-      setProfileMsg('Profile updated');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Unable to update profile');
-    } finally {
-      setProfileSaving(false);
-    }
-  };
-
   const handleDelete = async (id) => {
     try {
       await deleteNote(id);
@@ -90,7 +66,7 @@ const DashboardPage = () => {
     <div className="min-h-screen p-6 md:p-10">
       <div className="max-w-6xl mx-auto space-y-6">
         <TopBar
-          user={profile}
+          user={user}
           onLogout={logout}
           query={query}
           setQuery={setQuery}
@@ -99,13 +75,6 @@ const DashboardPage = () => {
         />
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
           <div className="space-y-4">
-            <ProfileCard
-              profile={profile}
-              onSave={handleProfileSave}
-              saving={profileSaving}
-              message={profileMsg}
-              error={error && !profileMsg ? error : ''}
-            />
             <NoteForm
               key={formKey}
               onSubmit={handleSave}
